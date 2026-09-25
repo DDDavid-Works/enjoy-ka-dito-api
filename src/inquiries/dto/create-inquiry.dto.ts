@@ -13,6 +13,11 @@ export class CreateInquiryDto {
   @MaxLength(200)
   companyName?: string
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  designation?: string
+
   @IsEmail()
   email!: string
 
@@ -20,6 +25,11 @@ export class CreateInquiryDto {
   @IsString()
   @MaxLength(30)
   phone?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  budgetBracket?: string
 
   @IsOptional()
   @IsIn(TRAVELER_TYPES)
@@ -39,6 +49,36 @@ export class CreateInquiryDto {
   @IsString()
   @MaxLength(100)
   travelDates?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  countryOfResidence?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  groupType?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
+  travelingWithSeniorsOrChildren?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  flightsBooked?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  desiredDestinations?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(30)
+  tripDuration?: string
 
   @IsOptional()
   @IsString()
