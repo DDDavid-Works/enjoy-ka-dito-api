@@ -22,8 +22,13 @@ export class InquiriesService {
   create(dto: CreateInquiryDto) {
     const inquiry = this.inquiries.create({
       name: dto.name,
+      companyName: dto.companyName,
       email: dto.email,
+      phone: dto.phone,
+      travelerType: dto.travelerType,
       destination: dto.destination,
+      travelerCount: dto.travelerCount,
+      travelDates: dto.travelDates,
       message: dto.message,
       package: dto.packageId ? { id: dto.packageId } : undefined,
     })
