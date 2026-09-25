@@ -9,6 +9,7 @@
     "start": "node dist/main.js",
     "seed:admin": "tsc -b && node dist/seed-admin.js",
     "seed:packages": "tsc -b && node dist/seed-packages.js",
+    "seed:hotels": "tsc -b && node dist/seed-hotels.js",
     "lint": "oxlint"
   },
   "dependencies": {
