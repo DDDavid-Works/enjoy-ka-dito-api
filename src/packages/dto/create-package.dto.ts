@@ -25,9 +25,10 @@ export class CreatePackageDto {
   @MaxLength(200)
   title!: string
 
+  @IsOptional()
   @IsString()
   @MaxLength(200)
-  slug!: string
+  slug?: string
 
   @IsOptional()
   @IsString()

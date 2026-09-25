@@ -30,8 +30,28 @@ export class PackagesService {
     return pkg
   }
 
-  create(dto: CreatePackageDto) {
-    return this.packages.save(this.packages.create(dto))
+  async create(dto: CreatePackageDto) {
+    const slug = dto.slug?.trim() || (await this.generateUniqueSlug(dto.title))
+    return this.packages.save(this.packages.create({ ...dto, slug }))
+  }
+
+  private async generateUniqueSlug(title: string) {
+    const base =
+      title
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '') || 'package'
+
+    let slug = base
+    let suffix = 2
+
+    while (await this.packages.exists({ where: { slug } })) {
+      slug = `${base}-${suffix}`
+      suffix += 1
+    }
+
+    return slug
   }
 
   async update(id: string, dto: UpdatePackageDto) {
