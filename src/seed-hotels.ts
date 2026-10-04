@@ -60,6 +60,18 @@ function parseStarRating(text: string): number {
   return match ? Number(match[1]) : 0
 }
 
+const REGION_OVERRIDES: Record<string, string> = {
+  CDO: 'CDO',
+  PAMPANGACLARK: 'Pampanga Clark',
+}
+
+function toProperCase(value: string): string {
+  const trimmed = value.trim()
+  const override = REGION_OVERRIDES[trimmed.toUpperCase()]
+  if (override) return override
+  return trimmed.toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase())
+}
+
 async function main() {
   const csvPath = path.resolve(process.cwd(), '../docs/HOTELS-RESORTS-extracted.csv')
   const text = readFileSync(csvPath, 'utf8')
@@ -81,7 +93,7 @@ async function main() {
 
     hotels.push({
       name: name.trim(),
-      region: region.trim(),
+      region: toProperCase(region),
       starRating: parseStarRating(starRatingText ?? ''),
     })
   }
