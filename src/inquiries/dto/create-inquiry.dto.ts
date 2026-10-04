@@ -1,9 +1,13 @@
 import { IsEmail, IsIn, IsOptional, IsString, IsUUID, MaxLength } from 'class-validator'
-import type { TravelerType } from '../inquiry.entity.js'
+import type { InquiryType, TravelerType } from '../inquiry.entity.js'
 
 const TRAVELER_TYPES: TravelerType[] = ['Corporate Group', 'Family', 'Senior Group', 'Solo Foreigner']
 
 export class CreateInquiryDto {
+  @IsOptional()
+  @IsIn(['quote', 'general'])
+  type?: InquiryType
+
   @IsString()
   @MaxLength(200)
   name!: string

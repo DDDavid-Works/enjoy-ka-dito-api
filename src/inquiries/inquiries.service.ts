@@ -27,6 +27,7 @@ export class InquiriesService {
     const linkedPackage = dto.packageId ? await this.packages.findOne({ where: { id: dto.packageId } }) : null
 
     const inquiry = this.inquiries.create({
+      type: dto.type ?? 'quote',
       name: dto.name,
       companyName: dto.companyName,
       designation: dto.designation,

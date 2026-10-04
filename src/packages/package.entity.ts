@@ -14,13 +14,20 @@ export type ItineraryDay = {
   description: string
 }
 
+export type QuotationSubDetail = {
+  text: string
+  price?: number
+}
+
 export type QuotationDetail = {
   text: string
-  details: string[]
+  price?: number
+  details: QuotationSubDetail[]
 }
 
 export type QuotationInclusion = {
   text: string
+  price?: number
   details: QuotationDetail[]
 }
 

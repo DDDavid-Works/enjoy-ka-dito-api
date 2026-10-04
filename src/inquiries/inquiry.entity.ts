@@ -2,6 +2,8 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } f
 import { Package } from '../packages/package.entity.js'
 
 export type InquiryStatus = 'new' | 'contacted' | 'closed'
+// 'quote' = a request for a quote; 'general' = a plain question from the Contact Us form.
+export type InquiryType = 'quote' | 'general'
 export type TravelerType = 'Corporate Group' | 'Family' | 'Senior Group' | 'Solo Foreigner'
 
 @Entity('inquiries')
@@ -62,6 +64,9 @@ export class Inquiry {
 
   @ManyToOne(() => Package, { nullable: true, onDelete: 'SET NULL' })
   package?: Package | null
+
+  @Column({ type: 'varchar', default: 'quote' })
+  type!: InquiryType
 
   @Column({ type: 'varchar', default: 'new' })
   status!: InquiryStatus
