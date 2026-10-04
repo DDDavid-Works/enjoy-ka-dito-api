@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
+import { Inquiry } from '../inquiries/inquiry.entity.js'
 import {
   Package,
   type QuotationAccommodation,
@@ -35,6 +36,10 @@ export class Quotation {
   // The package this quotation was started from, if any. Informational only.
   @ManyToOne(() => Package, { nullable: true, onDelete: 'SET NULL' })
   package?: Package | null
+
+  // The inquiry this quotation was created from, if any.
+  @ManyToOne(() => Inquiry, (inquiry) => inquiry.quotations, { nullable: true, onDelete: 'SET NULL' })
+  inquiry?: Inquiry | null
 
   @Column({ type: 'jsonb', default: [] })
   inclusions!: QuotationInclusion[]

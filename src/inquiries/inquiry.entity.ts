@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Package } from '../packages/package.entity.js'
+import { Quotation } from '../quotations/quotation.entity.js'
 
 export type InquiryStatus = 'new' | 'contacted' | 'closed'
 // 'quote' = a request for a quote; 'general' = a plain question from the Contact Us form.
@@ -64,6 +65,10 @@ export class Inquiry {
 
   @ManyToOne(() => Package, { nullable: true, onDelete: 'SET NULL' })
   package?: Package | null
+
+  // Quotations created from this inquiry (loaded as just id and title on the list).
+  @OneToMany(() => Quotation, (quotation) => quotation.inquiry)
+  quotations?: Quotation[]
 
   @Column({ type: 'varchar', default: 'quote' })
   type!: InquiryType

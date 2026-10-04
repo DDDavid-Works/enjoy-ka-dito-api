@@ -31,6 +31,11 @@ export class CreateQuotationDto {
   @IsUUID()
   packageId?: string
 
+  // The inquiry this quotation is created from.
+  @IsOptional()
+  @IsUUID()
+  inquiryId?: string
+
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })

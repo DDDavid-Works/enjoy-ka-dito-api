@@ -16,10 +16,14 @@ export class InquiriesService {
   ) {}
 
   findAll() {
-    return this.inquiries.find({
-      relations: { package: true },
-      order: { createdAt: 'DESC' },
-    })
+    // Only id and title of each quotation, so the list stays light.
+    return this.inquiries
+      .createQueryBuilder('inquiry')
+      .leftJoinAndSelect('inquiry.package', 'package')
+      .leftJoin('inquiry.quotations', 'quotation')
+      .addSelect(['quotation.id', 'quotation.title'])
+      .orderBy('inquiry.createdAt', 'DESC')
+      .getMany()
   }
 
   async findOne(id: string) {
