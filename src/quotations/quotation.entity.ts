@@ -21,6 +21,17 @@ export class Quotation {
   @Column({ type: 'varchar' })
   title!: string
 
+  // Who the quotation is for.
+  @Column({ type: 'varchar', default: '' })
+  customerName!: string
+
+  // Calendar date (YYYY-MM-DD); no time zone involved.
+  @Column({ type: 'date', nullable: true })
+  quoteDate?: string | null
+
+  @Column({ type: 'text', default: '' })
+  remarks!: string
+
   // The package this quotation was started from, if any. Informational only.
   @ManyToOne(() => Package, { nullable: true, onDelete: 'SET NULL' })
   package?: Package | null

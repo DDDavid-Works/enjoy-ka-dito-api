@@ -5,6 +5,7 @@ import { Package } from '../packages/package.entity.js'
 import { Quotation } from './quotation.entity.js'
 import { CreateQuotationDto } from './dto/create-quotation.dto.js'
 import { UpdateQuotationDto } from './dto/update-quotation.dto.js'
+import { toProperCase } from './proper-case.js'
 
 @Injectable()
 export class QuotationsService {
@@ -28,7 +29,11 @@ export class QuotationsService {
   async create(dto: CreateQuotationDto) {
     const { packageId, ...rest } = dto
     const saved = await this.quotations.save(
-      this.quotations.create({ ...rest, package: await this.resolvePackage(packageId) }),
+      this.quotations.create({
+        ...rest,
+        ...this.properName(rest.customerName),
+        package: await this.resolvePackage(packageId),
+      }),
     )
     return this.findOne(saved.id)
   }
@@ -37,13 +42,18 @@ export class QuotationsService {
     const quotation = await this.findOne(id)
     // The source package is set once at creation; editing never re-links it.
     const { packageId: _packageId, ...rest } = dto
-    await this.quotations.save(this.quotations.merge(quotation, rest))
+    await this.quotations.save(this.quotations.merge(quotation, { ...rest, ...this.properName(rest.customerName) }))
     return this.findOne(id)
   }
 
   async remove(id: string) {
     const result = await this.quotations.delete(id)
     if (!result.affected) throw new NotFoundException('Quotation not found')
+  }
+
+  // Prepared For is always stored in proper case.
+  private properName(customerName?: string) {
+    return customerName === undefined ? {} : { customerName: toProperCase(customerName) }
   }
 
   private async resolvePackage(packageId?: string) {
