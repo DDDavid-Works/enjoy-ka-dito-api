@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { Package } from '../packages/package.entity.js'
 import { Inquiry } from './inquiry.entity.js'
 import { CreateInquiryDto } from './dto/create-inquiry.dto.js'
 import { UpdateInquiryDto } from './dto/update-inquiry.dto.js'
@@ -10,6 +11,8 @@ export class InquiriesService {
   constructor(
     @InjectRepository(Inquiry)
     private readonly inquiries: Repository<Inquiry>,
+    @InjectRepository(Package)
+    private readonly packages: Repository<Package>,
   ) {}
 
   findAll() {
@@ -19,7 +22,10 @@ export class InquiriesService {
     })
   }
 
-  create(dto: CreateInquiryDto) {
+  async create(dto: CreateInquiryDto) {
+    // Ignore an unknown package id instead of failing the whole inquiry on the foreign key.
+    const linkedPackage = dto.packageId ? await this.packages.findOne({ where: { id: dto.packageId } }) : null
+
     const inquiry = this.inquiries.create({
       name: dto.name,
       companyName: dto.companyName,
@@ -38,7 +44,7 @@ export class InquiriesService {
       desiredDestinations: dto.desiredDestinations,
       tripDuration: dto.tripDuration,
       message: dto.message,
-      package: dto.packageId ? { id: dto.packageId } : undefined,
+      package: linkedPackage ?? undefined,
     })
 
     return this.inquiries.save(inquiry)
