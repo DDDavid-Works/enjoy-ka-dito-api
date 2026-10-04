@@ -5,6 +5,12 @@ import { Package } from './package.entity.js'
 import { CreatePackageDto } from './dto/create-package.dto.js'
 import { UpdatePackageDto } from './dto/update-package.dto.js'
 
+// Quotation data is internal; strip it for anonymous (website) requests.
+function toPublic(pkg: Package) {
+  const { quotationInclusions: _quotationInclusions, ...rest } = pkg
+  return rest
+}
+
 @Injectable()
 export class PackagesService {
   constructor(
@@ -17,7 +23,8 @@ export class PackagesService {
     if (!options.includeDrafts) where.status = 'published'
     if (options.category && options.category !== 'All') where.category = options.category
 
-    return this.packages.find({ where, order: { createdAt: 'DESC' } })
+    const found = await this.packages.find({ where, order: { createdAt: 'DESC' } })
+    return options.includeDrafts ? found : found.map(toPublic)
   }
 
   async findBySlug(slug: string, includeDrafts: boolean) {
@@ -27,7 +34,7 @@ export class PackagesService {
       throw new NotFoundException('Tour not found')
     }
 
-    return pkg
+    return includeDrafts ? pkg : toPublic(pkg)
   }
 
   async create(dto: CreatePackageDto) {

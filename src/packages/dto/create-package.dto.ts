@@ -8,7 +8,7 @@ import {
   MaxLength,
   ValidateNested,
 } from 'class-validator'
-import type { ItineraryDay, PackageCategory, PackageStatus } from '../package.entity.js'
+import type { ItineraryDay, PackageCategory, PackageStatus, QuotationDetail, QuotationInclusion } from '../package.entity.js'
 
 class ItineraryDayDto implements ItineraryDay {
   @IsString()
@@ -18,6 +18,28 @@ class ItineraryDayDto implements ItineraryDay {
   @IsString()
   @MaxLength(2000)
   description!: string
+}
+
+class QuotationDetailDto implements QuotationDetail {
+  @IsString()
+  @MaxLength(500)
+  text!: string
+
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(500, { each: true })
+  details!: string[]
+}
+
+class QuotationInclusionDto implements QuotationInclusion {
+  @IsString()
+  @MaxLength(500)
+  text!: string
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => QuotationDetailDto)
+  details!: QuotationDetailDto[]
 }
 
 export class CreatePackageDto {
@@ -78,6 +100,12 @@ export class CreatePackageDto {
   @IsString()
   @MaxLength(5000)
   termsAndConditions?: string
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => QuotationInclusionDto)
+  quotationInclusions?: QuotationInclusionDto[]
 
   @IsOptional()
   @IsString()

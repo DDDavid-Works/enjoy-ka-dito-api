@@ -14,6 +14,16 @@ export type ItineraryDay = {
   description: string
 }
 
+export type QuotationDetail = {
+  text: string
+  details: string[]
+}
+
+export type QuotationInclusion = {
+  text: string
+  details: QuotationDetail[]
+}
+
 @Entity('packages')
 export class Package {
   @PrimaryGeneratedColumn('uuid')
@@ -54,6 +64,10 @@ export class Package {
 
   @Column({ type: 'text', nullable: true })
   termsAndConditions?: string
+
+  // Internal, used for quotations only. Never exposed on the public website API.
+  @Column({ type: 'jsonb', default: [] })
+  quotationInclusions!: QuotationInclusion[]
 
   @Column({ type: 'varchar', nullable: true })
   mainImage?: string
