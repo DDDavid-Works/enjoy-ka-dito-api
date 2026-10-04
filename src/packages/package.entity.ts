@@ -24,6 +24,18 @@ export type QuotationInclusion = {
   details: QuotationDetail[]
 }
 
+export type QuotationAccommodation = {
+  hotelId: string
+  nights: number
+  remarks?: string
+  ratePerHead?: number
+}
+
+export type QuotationOptionalTour = {
+  text: string
+  details: string[]
+}
+
 @Entity('packages')
 export class Package {
   @PrimaryGeneratedColumn('uuid')
@@ -68,6 +80,15 @@ export class Package {
   // Internal, used for quotations only. Never exposed on the public website API.
   @Column({ type: 'jsonb', default: [] })
   quotationInclusions!: QuotationInclusion[]
+
+  @Column({ type: 'jsonb', default: [] })
+  quotationAccommodations!: QuotationAccommodation[]
+
+  @Column({ type: 'jsonb', default: [] })
+  quotationExclusions!: string[]
+
+  @Column({ type: 'jsonb', default: [] })
+  quotationOptionalTours!: QuotationOptionalTour[]
 
   @Column({ type: 'varchar', nullable: true })
   mainImage?: string

@@ -7,7 +7,13 @@ import { UpdatePackageDto } from './dto/update-package.dto.js'
 
 // Quotation data is internal; strip it for anonymous (website) requests.
 function toPublic(pkg: Package) {
-  const { quotationInclusions: _quotationInclusions, ...rest } = pkg
+  const {
+    quotationInclusions: _quotationInclusions,
+    quotationAccommodations: _quotationAccommodations,
+    quotationExclusions: _quotationExclusions,
+    quotationOptionalTours: _quotationOptionalTours,
+    ...rest
+  } = pkg
   return rest
 }
 

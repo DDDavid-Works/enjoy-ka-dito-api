@@ -3,12 +3,16 @@ import {
   ArrayMaxSize,
   IsArray,
   IsIn,
+  IsInt,
+  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
+  Max,
+  Min,
   ValidateNested,
 } from 'class-validator'
-import type { ItineraryDay, PackageCategory, PackageStatus, QuotationDetail, QuotationInclusion } from '../package.entity.js'
+import type { ItineraryDay, PackageCategory, PackageStatus, QuotationAccommodation, QuotationDetail, QuotationInclusion, QuotationOptionalTour } from '../package.entity.js'
 
 class ItineraryDayDto implements ItineraryDay {
   @IsString()
@@ -40,6 +44,38 @@ class QuotationInclusionDto implements QuotationInclusion {
   @ValidateNested({ each: true })
   @Type(() => QuotationDetailDto)
   details!: QuotationDetailDto[]
+}
+
+class QuotationAccommodationDto implements QuotationAccommodation {
+  @IsString()
+  @MaxLength(100)
+  hotelId!: string
+
+  @IsInt()
+  @Min(1)
+  @Max(365)
+  nights!: number
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
+  remarks?: string
+
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(0)
+  ratePerHead?: number
+}
+
+class QuotationOptionalTourDto implements QuotationOptionalTour {
+  @IsString()
+  @MaxLength(500)
+  text!: string
+
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(500, { each: true })
+  details!: string[]
 }
 
 export class CreatePackageDto {
@@ -106,6 +142,24 @@ export class CreatePackageDto {
   @ValidateNested({ each: true })
   @Type(() => QuotationInclusionDto)
   quotationInclusions?: QuotationInclusionDto[]
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => QuotationAccommodationDto)
+  quotationAccommodations?: QuotationAccommodationDto[]
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  @MaxLength(500, { each: true })
+  quotationExclusions?: string[]
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => QuotationOptionalTourDto)
+  quotationOptionalTours?: QuotationOptionalTourDto[]
 
   @IsOptional()
   @IsString()
