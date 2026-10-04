@@ -22,6 +22,12 @@ export class InquiriesService {
     })
   }
 
+  async findOne(id: string) {
+    const inquiry = await this.inquiries.findOne({ where: { id }, relations: { package: true } })
+    if (!inquiry) throw new NotFoundException('Inquiry not found')
+    return inquiry
+  }
+
   async create(dto: CreateInquiryDto) {
     // Ignore an unknown package id instead of failing the whole inquiry on the foreign key.
     const linkedPackage = dto.packageId ? await this.packages.findOne({ where: { id: dto.packageId } }) : null

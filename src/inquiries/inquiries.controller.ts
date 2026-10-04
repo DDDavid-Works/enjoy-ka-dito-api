@@ -20,6 +20,12 @@ export class InquiriesController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.inquiries.findOne(id)
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   updateStatus(@Param('id') id: string, @Body() dto: UpdateInquiryDto) {
     return this.inquiries.updateStatus(id, dto)
