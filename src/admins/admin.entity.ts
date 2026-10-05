@@ -16,6 +16,9 @@ export class Admin {
   @Column({ type: 'varchar' })
   name!: string
 
+  @Column({ type: 'varchar', nullable: true })
+  contactNumber?: string | null
+
   @Column({ type: 'varchar', default: 'admin' })
   role!: AdminRole
 
