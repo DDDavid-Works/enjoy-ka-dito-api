@@ -22,6 +22,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const admin = await this.admins.findById(payload.sub)
     if (!admin || !admin.active) throw new UnauthorizedException()
 
-    return { id: admin.id, email: admin.email, name: admin.name, role: admin.role }
+    return { id: admin.id, email: admin.email, name: admin.name, role: admin.role, modules: admin.modules }
   }
 }

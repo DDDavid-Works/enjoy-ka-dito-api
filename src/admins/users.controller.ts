@@ -15,8 +15,11 @@ import { UpdateUserDto } from './dto/update-user.dto.js'
 import { ChangePasswordDto } from './dto/change-password.dto.js'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
 import { CurrentAdmin, type CurrentAdminPayload } from '../auth/current-admin.decorator.js'
+import { AppModule, RequireModules } from '../auth/modules.js'
+import { ModulesGuard } from '../auth/modules.guard.js'
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ModulesGuard)
+@RequireModules(AppModule.Users)
 @Controller('users')
 export class UsersController {
   constructor(private readonly admins: AdminsService) {}
@@ -37,8 +40,12 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    return this.admins.update(id, dto)
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+    @CurrentAdmin() current: CurrentAdminPayload,
+  ) {
+    return this.admins.update(id, dto, current.id)
   }
 
   @Patch(':id/password')

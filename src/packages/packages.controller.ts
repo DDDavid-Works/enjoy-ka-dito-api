@@ -13,6 +13,8 @@ import { PackagesService } from './packages.service.js'
 import { CreatePackageDto } from './dto/create-package.dto.js'
 import { UpdatePackageDto } from './dto/update-package.dto.js'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
+import { AppModule, RequireModules } from '../auth/modules.js'
+import { ModulesGuard } from '../auth/modules.guard.js'
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard.js'
 import { CurrentAdmin, type CurrentAdminPayload } from '../auth/current-admin.decorator.js'
 
@@ -32,19 +34,22 @@ export class PackagesController {
     return this.packages.findBySlug(slug, Boolean(admin))
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ModulesGuard)
+  @RequireModules(AppModule.Packages)
   @Post()
   create(@Body() dto: CreatePackageDto) {
     return this.packages.create(dto)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ModulesGuard)
+  @RequireModules(AppModule.Packages)
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdatePackageDto) {
     return this.packages.update(id, dto)
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ModulesGuard)
+  @RequireModules(AppModule.Packages)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.packages.remove(id)

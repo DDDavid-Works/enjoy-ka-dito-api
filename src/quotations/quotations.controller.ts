@@ -3,8 +3,11 @@ import { QuotationsService } from './quotations.service.js'
 import { CreateQuotationDto } from './dto/create-quotation.dto.js'
 import { UpdateQuotationDto } from './dto/update-quotation.dto.js'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
+import { AppModule, RequireModules } from '../auth/modules.js'
+import { ModulesGuard } from '../auth/modules.guard.js'
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ModulesGuard)
+@RequireModules(AppModule.Quotations)
 @Controller('quotations')
 export class QuotationsController {
   constructor(private readonly quotations: QuotationsService) {}

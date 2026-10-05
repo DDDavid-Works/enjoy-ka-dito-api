@@ -1,4 +1,5 @@
-import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
+import { IsArray, IsEmail, IsEnum, IsOptional, IsString, MaxLength, MinLength } from 'class-validator'
+import { AppModule } from '../../auth/modules.js'
 
 export class CreateUserDto {
   @IsString()
@@ -14,6 +15,10 @@ export class CreateUserDto {
   @IsString()
   @MaxLength(50)
   contactNumber?: string
+
+  @IsArray()
+  @IsEnum(AppModule, { each: true })
+  modules!: AppModule[]
 
   @IsString()
   @MinLength(8)

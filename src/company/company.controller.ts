@@ -2,6 +2,8 @@ import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common'
 import { CompanyService } from './company.service.js'
 import { UpdateCompanyDetailsDto } from './dto/update-company-details.dto.js'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
+import { AppModule, RequireModules } from '../auth/modules.js'
+import { ModulesGuard } from '../auth/modules.guard.js'
 
 @Controller('company-details')
 export class CompanyController {
@@ -13,7 +15,8 @@ export class CompanyController {
     return this.company.get()
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ModulesGuard)
+  @RequireModules(AppModule.Company)
   @Patch()
   update(@Body() dto: UpdateCompanyDetailsDto) {
     return this.company.update(dto)

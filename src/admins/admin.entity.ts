@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { ALL_MODULES, type AppModule } from '../auth/modules.js'
 
 export type AdminRole = 'admin'
 
@@ -18,6 +19,14 @@ export class Admin {
 
   @Column({ type: 'varchar', nullable: true })
   contactNumber?: string | null
+
+  // Existing users get every module when this column is first added, so nobody is locked out.
+  @Column({
+    type: 'text',
+    array: true,
+    default: () => `ARRAY[${ALL_MODULES.map((m) => `'${m}'`).join(',')}]::text[]`,
+  })
+  modules!: AppModule[]
 
   @Column({ type: 'varchar', default: 'admin' })
   role!: AdminRole

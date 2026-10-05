@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import { Admin } from './admin.entity.js'
+import { AppModule } from '../auth/modules.js'
 import type { CreateUserDto } from './dto/create-user.dto.js'
 import type { UpdateUserDto } from './dto/update-user.dto.js'
 import type { ChangePasswordDto } from './dto/change-password.dto.js'
@@ -20,6 +21,7 @@ function toUser(admin: Admin) {
     name: admin.name,
     email: admin.email,
     contactNumber: admin.contactNumber ?? null,
+    modules: admin.modules,
     createdAt: admin.createdAt,
   }
 }
@@ -39,7 +41,14 @@ export class AdminsService {
     return this.admins.findOne({ where: { id } })
   }
 
-  async create(data: { email: string; password: string; name: string; contactNumber?: string }) {
+  // `modules` omitted means every module (used by the seed script).
+  async create(data: {
+    email: string
+    password: string
+    name: string
+    contactNumber?: string
+    modules?: AppModule[]
+  }) {
     const passwordHash = await bcrypt.hash(data.password, 12)
     return this.admins.save(
       this.admins.create({
@@ -47,6 +56,7 @@ export class AdminsService {
         passwordHash,
         name: data.name,
         contactNumber: data.contactNumber || undefined,
+        ...(data.modules ? { modules: [...new Set(data.modules)] } : {}),
       }),
     )
   }
@@ -70,8 +80,16 @@ export class AdminsService {
     return toUser(await this.create({ ...dto, email, name: dto.name.trim() }))
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(id: string, dto: UpdateUserDto, actingUserId: string) {
     const user = await this.requireById(id)
+
+    if (dto.modules !== undefined) {
+      // Stops someone from locking themselves out of user management.
+      if (id === actingUserId && !dto.modules.includes(AppModule.Users)) {
+        throw new BadRequestException("You can't remove your own access to the Users module.")
+      }
+      user.modules = [...new Set(dto.modules)]
+    }
 
     if (dto.email !== undefined) {
       const email = dto.email.trim()
