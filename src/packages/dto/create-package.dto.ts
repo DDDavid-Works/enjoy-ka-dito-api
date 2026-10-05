@@ -110,6 +110,11 @@ export class CreatePackageDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(5000)
+  quotationInclusionNotes?: string
+
+  @IsOptional()
+  @IsString()
   mainImage?: string
 
   @IsOptional()

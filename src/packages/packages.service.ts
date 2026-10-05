@@ -12,6 +12,7 @@ function toPublic(pkg: Package) {
     quotationAccommodations: _quotationAccommodations,
     quotationExclusions: _quotationExclusions,
     quotationOptionalTours: _quotationOptionalTours,
+    quotationInclusionNotes: _quotationInclusionNotes,
     ...rest
   } = pkg
   return rest

@@ -44,6 +44,9 @@ export class Quotation {
   @Column({ type: 'jsonb', default: [] })
   inclusions!: QuotationInclusion[]
 
+  @Column({ type: 'text', default: '' })
+  inclusionNotes!: string
+
   @Column({ type: 'jsonb', default: [] })
   accommodations!: QuotationAccommodation[]
 

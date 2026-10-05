@@ -59,4 +59,9 @@ export class CreateQuotationDto {
   @ValidateNested({ each: true })
   @Type(() => QuotationOptionalTourDto)
   optionalTours?: QuotationOptionalTourDto[]
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(5000)
+  inclusionNotes?: string
 }

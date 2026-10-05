@@ -91,6 +91,10 @@ export class Package {
   @Column({ type: 'jsonb', default: [] })
   quotationAccommodations!: QuotationAccommodation[]
 
+  // Free-text notes printed under the inclusions on a quotation (e.g. a tour note).
+  @Column({ type: 'text', default: '' })
+  quotationInclusionNotes!: string
+
   @Column({ type: 'jsonb', default: [] })
   quotationExclusions!: string[]
 
