@@ -145,6 +145,9 @@ const PACKAGES: CreatePackageDto[] = [
   },
 ]
 
+// `--draft` creates the packages as drafts: visible in the admin only, not on the public website.
+const asDraft = process.argv.includes('--draft')
+
 async function main() {
   const app = await NestFactory.createApplicationContext(AppModule)
   const packages = app.get(PackagesService)
@@ -157,8 +160,8 @@ async function main() {
       continue
     }
 
-    await packages.create(dto)
-    console.log(`Created "${dto.title}".`)
+    await packages.create(asDraft ? { ...dto, status: 'draft' } : dto)
+    console.log(`Created "${dto.title}"${asDraft ? ' as a draft' : ''}.`)
   }
 
   await app.close()
