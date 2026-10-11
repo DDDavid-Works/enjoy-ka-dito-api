@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { CompanyDetails } from './company-details.entity.js'
 import { UpdateCompanyDetailsDto } from './dto/update-company-details.dto.js'
+import { RevalidationService } from '../revalidation/revalidation.service.js'
 
 // What the site showed before this was editable; used to seed the first read.
 const DEFAULTS = {
@@ -16,6 +17,7 @@ export class CompanyService {
   constructor(
     @InjectRepository(CompanyDetails)
     private readonly details: Repository<CompanyDetails>,
+    private readonly revalidation: RevalidationService,
   ) {}
 
   async get() {
@@ -27,7 +29,7 @@ export class CompanyService {
   async update(dto: UpdateCompanyDetailsDto) {
     const current = await this.get()
     const contactNumbers = dto.contactNumbers?.map((n) => n.trim()).filter(Boolean)
-    return this.details.save(
+    const saved = await this.details.save(
       this.details.merge(current, {
         ...dto,
         email: dto.email?.trim(),
@@ -35,5 +37,7 @@ export class CompanyService {
         ...(contactNumbers ? { contactNumbers } : {}),
       }),
     )
+    void this.revalidation.revalidate(['company'])
+    return saved
   }
 }

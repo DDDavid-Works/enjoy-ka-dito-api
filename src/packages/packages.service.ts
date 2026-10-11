@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { Package } from './package.entity.js'
 import { CreatePackageDto } from './dto/create-package.dto.js'
 import { UpdatePackageDto } from './dto/update-package.dto.js'
+import { RevalidationService } from '../revalidation/revalidation.service.js'
 
 // Quotation data is internal; strip it for anonymous (website) requests.
 function toPublic(pkg: Package) {
@@ -23,6 +24,7 @@ export class PackagesService {
   constructor(
     @InjectRepository(Package)
     private readonly packages: Repository<Package>,
+    private readonly revalidation: RevalidationService,
   ) {}
 
   async findAll(options: { category?: string; includeDrafts: boolean }) {
@@ -46,7 +48,9 @@ export class PackagesService {
 
   async create(dto: CreatePackageDto) {
     const slug = dto.slug?.trim() || (await this.generateUniqueSlug(dto.title))
-    return this.packages.save(this.packages.create({ ...dto, slug }))
+    const saved = await this.packages.save(this.packages.create({ ...dto, slug }))
+    void this.revalidation.revalidate(['packages', `package:${saved.slug}`])
+    return saved
   }
 
   private async generateUniqueSlug(title: string) {
@@ -72,11 +76,17 @@ export class PackagesService {
     const pkg = await this.packages.findOne({ where: { id } })
     if (!pkg) throw new NotFoundException('Package not found')
 
-    return this.packages.save(this.packages.merge(pkg, dto))
+    const previousSlug = pkg.slug
+    const saved = await this.packages.save(this.packages.merge(pkg, dto))
+    // Both slugs: if the slug changed, the old URL must stop serving the package.
+    void this.revalidation.revalidate(['packages', `package:${previousSlug}`, `package:${saved.slug}`])
+    return saved
   }
 
   async remove(id: string) {
+    const pkg = await this.packages.findOne({ where: { id } })
     const result = await this.packages.delete(id)
     if (!result.affected) throw new NotFoundException('Package not found')
+    void this.revalidation.revalidate(['packages', ...(pkg ? [`package:${pkg.slug}`] : [])])
   }
 }
