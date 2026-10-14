@@ -10,7 +10,6 @@
     "seed:admin": "tsc -b && node dist/seed-admin.js",
     "seed:packages": "tsc -b && node dist/seed-packages.js",
     "seed:hotels": "tsc -b && node dist/seed-hotels.js",
-    "migrate:wp-images": "tsc -b && node dist/migrate-wp-images.js",
     "lint": "oxlint"
   },
   "dependencies": {
