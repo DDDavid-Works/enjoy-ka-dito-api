@@ -9,6 +9,7 @@ import { HotelsModule } from './hotels/hotels.module.js'
 import { QuotationsModule } from './quotations/quotations.module.js'
 import { CompanyModule } from './company/company.module.js'
 import { RevalidationModule } from './revalidation/revalidation.module.js'
+import { MediaModule } from './media/media.module.js'
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { RevalidationModule } from './revalidation/revalidation.module.js'
     QuotationsModule,
     CompanyModule,
     RevalidationModule,
+    MediaModule,
   ],
 })
 export class AppModule {}
