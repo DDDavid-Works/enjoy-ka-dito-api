@@ -8,6 +8,14 @@ export class UpdateCompanyDetailsDto {
   @MaxLength(200)
   email?: string
 
+  // The full list of public email addresses, in display order.
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(10)
+  @IsEmail({}, { each: true })
+  @MaxLength(200, { each: true })
+  emails?: string[]
+
   @IsOptional()
   @IsString()
   @MaxLength(500)

@@ -6,8 +6,12 @@ export class CompanyDetails {
   @PrimaryGeneratedColumn('uuid')
   id!: string
 
+  // The first of `emails`, kept so older clients that only know about one address keep working.
   @Column({ type: 'varchar', default: '' })
   email!: string
+
+  @Column({ type: 'jsonb', default: [] })
+  emails!: string[]
 
   @Column({ type: 'text', default: '' })
   address!: string
