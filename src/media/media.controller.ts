@@ -15,7 +15,7 @@ export class MediaController {
   @UseGuards(JwtAuthGuard, ModulesGuard)
   @RequireModules(AppModule.Packages)
   @Post()
-  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 25 * 1024 * 1024, files: 1 } }))
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 6 * 1024 * 1024, files: 1 } }))
   async upload(@UploadedFile() file: Express.Multer.File | undefined, @Req() req: Request) {
     const result = await this.media.upload(file)
     // Behind Railway's proxy the public scheme/host arrive in the x-forwarded-* headers.
