@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { InquiriesService } from './inquiries.service.js'
+import { RecaptchaService } from './recaptcha.service.js'
 import { CreateInquiryDto } from './dto/create-inquiry.dto.js'
 import { UpdateInquiryDto } from './dto/update-inquiry.dto.js'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js'
@@ -8,10 +9,14 @@ import { ModulesGuard } from '../auth/modules.guard.js'
 
 @Controller('inquiries')
 export class InquiriesController {
-  constructor(private readonly inquiries: InquiriesService) {}
+  constructor(
+    private readonly inquiries: InquiriesService,
+    private readonly recaptcha: RecaptchaService,
+  ) {}
 
   @Post()
-  create(@Body() dto: CreateInquiryDto) {
+  async create(@Body() dto: CreateInquiryDto) {
+    await this.recaptcha.verify(dto.recaptchaToken)
     return this.inquiries.create(dto)
   }
 

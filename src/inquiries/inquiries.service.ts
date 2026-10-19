@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Package } from '../packages/package.entity.js'
 import { Inquiry } from './inquiry.entity.js'
+import { InquiryMailerService } from './inquiry-mailer.service.js'
 import { CreateInquiryDto } from './dto/create-inquiry.dto.js'
 import { UpdateInquiryDto } from './dto/update-inquiry.dto.js'
 
@@ -13,6 +14,7 @@ export class InquiriesService {
     private readonly inquiries: Repository<Inquiry>,
     @InjectRepository(Package)
     private readonly packages: Repository<Package>,
+    private readonly mailer: InquiryMailerService,
   ) {}
 
   findAll() {
@@ -58,7 +60,10 @@ export class InquiriesService {
       package: linkedPackage ?? undefined,
     })
 
-    return this.inquiries.save(inquiry)
+    const saved = await this.inquiries.save(inquiry)
+    // Not awaited: a slow or failing email provider must never delay or fail the visitor's submission.
+    void this.mailer.notify(saved)
+    return saved
   }
 
   async updateStatus(id: string, dto: UpdateInquiryDto) {

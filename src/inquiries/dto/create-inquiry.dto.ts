@@ -92,4 +92,10 @@ export class CreateInquiryDto {
   @IsOptional()
   @IsUUID()
   packageId?: string
+
+  // reCAPTCHA v3 token; checked by the controller and never stored.
+  @IsOptional()
+  @IsString()
+  @MaxLength(4000)
+  recaptchaToken?: string
 }
