@@ -62,6 +62,16 @@ export class CreateQuotationDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(5000)
+  @MaxLength(20000)
   inclusionNotes?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20000)
+  paymentNotes?: string
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20000)
+  importantNotes?: string
 }

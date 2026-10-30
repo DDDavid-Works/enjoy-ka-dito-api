@@ -47,6 +47,9 @@ export class Quotation {
   @Column({ type: 'text', default: '' })
   inclusionNotes!: string
 
+  @Column({ type: 'text', default: '' })
+  paymentNotes!: string
+
   @Column({ type: 'jsonb', default: [] })
   accommodations!: QuotationAccommodation[]
 
@@ -55,6 +58,9 @@ export class Quotation {
 
   @Column({ type: 'jsonb', default: [] })
   optionalTours!: QuotationOptionalTour[]
+
+  @Column({ type: 'text', default: '' })
+  importantNotes!: string
 
   @CreateDateColumn()
   createdAt!: Date
