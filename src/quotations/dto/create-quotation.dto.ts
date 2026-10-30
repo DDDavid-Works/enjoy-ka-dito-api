@@ -24,6 +24,11 @@ export class CreateQuotationDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(200)
+  travelDate?: string
+
+  @IsOptional()
+  @IsString()
   @MaxLength(5000)
   remarks?: string
 

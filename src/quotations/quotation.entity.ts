@@ -30,6 +30,10 @@ export class Quotation {
   @Column({ type: 'date', nullable: true })
   quoteDate?: string | null
 
+  // Free text so it can hold a range, e.g. "May 14-17, 2027".
+  @Column({ type: 'varchar', default: '' })
+  travelDate!: string
+
   @Column({ type: 'text', default: '' })
   remarks!: string
 
