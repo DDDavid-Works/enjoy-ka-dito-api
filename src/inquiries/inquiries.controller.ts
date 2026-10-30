@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { InquiriesService } from './inquiries.service.js'
 import { RecaptchaService } from './recaptcha.service.js'
 import { CreateInquiryDto } from './dto/create-inquiry.dto.js'
@@ -39,5 +39,13 @@ export class InquiriesController {
   @Patch(':id')
   updateStatus(@Param('id') id: string, @Body() dto: UpdateInquiryDto) {
     return this.inquiries.updateStatus(id, dto)
+  }
+
+  // Lets the agency honor a "delete my data" request. Linked quotations stay, with the link cleared.
+  @UseGuards(JwtAuthGuard, ModulesGuard)
+  @RequireModules(AppModule.Inquiries)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.inquiries.remove(id)
   }
 }

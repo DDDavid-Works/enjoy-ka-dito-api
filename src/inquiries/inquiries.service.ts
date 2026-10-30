@@ -73,4 +73,9 @@ export class InquiriesService {
     inquiry.status = dto.status
     return this.inquiries.save(inquiry)
   }
+
+  async remove(id: string) {
+    const result = await this.inquiries.delete(id)
+    if (!result.affected) throw new NotFoundException('Inquiry not found')
+  }
 }
